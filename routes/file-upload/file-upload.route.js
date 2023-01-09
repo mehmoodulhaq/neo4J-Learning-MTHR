@@ -24,40 +24,35 @@ route.post('/', async (reqReadablestream, resWriteableStream) => {
     });
 })
 
-route.get('/download', async (reqReadablestream, resWriteableStream) => {
+route.get('/download', async (req, res) => {
 
 
     const download = () => {
         return new Promise((resolve, reject) => {
 
-            const filePath = path.join(__dirname, `../../uploaded-images/${reqReadablestream.query.fileName}`);
-            const readable = fs.createReadStream(filePath);
-            readable.on('data', (chunk) => resWriteableStream.write(chunk));
+            const filePath = path.join(__dirname, `../../uploaded-images/${req.query.fileName}`);
+            const fileStat = fs.statSync(filePath);
 
-            readable.on('end', () => {
-                const msg = `Data downloaded from ${filePath}`;
-                
-                resolve({ status: 'success', msg })
+           
 
-            });
+            res.setHeader('Content-Disposition', `attachment; filename=${req.query.fileName}`);
+            res.setHeader('Content-Type', 'application/octet-stream');
+            res.setHeader('Content-Length', fileStat.size);
+  
+            const readStream = fs.createReadStream(filePath);
+            readStream.pipe(res);
 
-            readable.on('error', err => {
-                // Send an error message to the client
-                console.error(err);
-                reject(err)
-            });
         })
     }
 
     try {
         const result = await download()
-        resWriteableStream.end();
-        return
+       
     } catch (error) {
-        
+
         resWriteableStream.json({ status: 'error', error });
     }
-   
+
 
 })
 

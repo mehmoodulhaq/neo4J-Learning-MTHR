@@ -76,6 +76,7 @@ services:
      - neo-import:/import
      - neo-conf:/conf
      - neo-logs:/logs
+     
 volumes:
  db-data:
  pgadmin-data:

@@ -14,7 +14,11 @@ async function main() {
     app.use(express.urlencoded({ extended: true }))
 
     app.use('/', userRuotes)
-    app.use('/file-upload',fileUpload )
+    app.use('/file-upload/',fileUpload )
+    app.use((req, res, next) => {
+        console.log('test')
+        next()
+    })
     app.use('/mongo/', mongoUserRuotes)
     app.listen(process.env.PORT)
 
