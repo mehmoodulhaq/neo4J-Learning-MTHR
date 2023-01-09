@@ -1,0 +1,89 @@
+version: '3.8'
+services:
+ db:
+   container_name: BenAwad-FullStack-React-GraphQL-Tut
+   image: postgres
+   restart: always
+   environment:
+     POSTGRES_DB: lireddit
+     POSTGRES_USER: abdullah
+     POSTGRES_PASSWORD: haris123
+     PGDATA: /var/lib/postgresql/data
+   ports:
+     - "5432:5432"
+   volumes:
+     - db-data:/var/lib/postgresql/data
+
+ pgadmin:
+   container_name: pgadmin4_container
+   image: dpage/pgadmin4:6.8
+   restart: always
+   environment:
+     PGADMIN_DEFAULT_EMAIL: hsmeh.dev@gmail.com
+     PGADMIN_DEFAULT_PASSWORD: admin
+     PGADMIN_LISTEN_PORT: 80
+   ports:
+     - "8080:80"
+   volumes:
+     - pgadmin-data:/var/lib/pgadmin
+
+#  cloudbeaver:
+#    container_name: cloudbeaver
+#    image: dbeaver/cloudbeaver:latest
+#    restart: always
+#    #  environment:
+#    #    PGADMIN_DEFAULT_EMAIL: hsmeh.dev@gmail.com
+#    #    PGADMIN_DEFAULT_PASSWORD: admin
+#    #    PGADMIN_LISTEN_PORT: 80
+#    ports:
+#      - "8081:8978"
+#    volumes:
+#      - dbeaver-data:/var/cloudbeaver/workspace 
+
+ redis:
+   container_name: redis_container
+   image: redis:7.0-rc2
+   restart: always
+   ports:
+     - "6379:6379"
+
+   volumes:
+     - redis-data:/var/lib/redis
+     
+ mongo:
+   image: 'mongo:3.6'
+   ports:
+     - '27017:27017'
+   volumes:
+     - 'mongo:/data/db'
+
+ neo4j:
+   image: neo4j:4.2.5
+   restart: unless-stopped
+   ports:
+     - "7474:7474"
+     - "7687:7687"
+   environment:
+     - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+     - NEO4J_apoc_import_file_enabled=true
+     - NEO4J_dbms_shell_enabled=true
+     - NEO4J_dbms_memory_pagecache_size=1G
+     - NEO4J_dbms.memory.heap.initial_size=1G
+     - NEO4J_dbms_memory_heap_max__size=1G
+   volumes:
+     - neo-plugin:/plugins
+     - neo-data:/data
+     - neo-import:/import
+     - neo-conf:/conf
+     - neo-logs:/logs
+volumes:
+ db-data:
+ pgadmin-data:
+ redis-data:
+ mongo:
+ neo-plugin:
+ neo-data:
+ neo-import:
+ neo-conf:
+ neo-logs:
+#  dbeaver-data:
